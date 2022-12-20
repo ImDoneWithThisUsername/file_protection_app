@@ -4,18 +4,27 @@ from Crypto.Util.Padding import pad, unpad
 from Crypto.Random import get_random_bytes, random
 
 class DataEncryption:
+    key_size = 32
+    iv_size = 16
+
     def __init__(self, key: bytes) -> None:
         self.key = key
 
-    def addSalt(self, data: bytes):
+    def addSalt(self, data: bytes) -> bytes:
         salt = get_random_bytes(random.randint(1,10)* 8)
         data = salt + ".".encode("utf-8") + data
         return data
 
-    def splitSalt(self, data:bytes):
+    def splitSalt(self, data:bytes) -> bytes:
         pt_offset = data.find(".".encode("utf-8"))
         pt = data[pt_offset + 1:]
         return pt
+
+    def compareHashed(self, hashed:bytes) -> bool:
+        hash_object = SHA256.new(self.key)
+        if (hash_object.digest() == hashed):
+            return 1
+        return 0
 
     def encrypt(self, data: bytes):
         """
@@ -29,7 +38,10 @@ class DataEncryption:
 
         return hash_object.digest(), cipher.iv, ct_bytes
         
-    def decrypt(self, data: bytes, iv: bytes):
+    def decrypt(self, data: bytes, iv: bytes) -> bytes:
+        print(data)
+        print(iv)
+        print(self.key)
         try:
             cipher = AES.new(pad(self.key, 16), AES.MODE_CBC, iv)
             pt = unpad(cipher.decrypt(data), AES.block_size)
@@ -38,6 +50,8 @@ class DataEncryption:
             return pt
         except (ValueError, KeyError):
             return None
+
+
 
 if __name__ == "__main__":
     key = "test key".encode("utf-8")
