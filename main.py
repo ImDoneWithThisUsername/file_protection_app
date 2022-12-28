@@ -143,36 +143,34 @@ if __name__ == "__main__":
     """
     Here come the program
     """
-    choice = input("1/ Mã hóa file \n"
-                   "2/ Giải mã file \n"
-                   "Chọn chức năng (Enter để thoát): ")
-    if choice == "1":
-        # encryption
-        path = input("Nhập đường dẫn tệp tin cần được mã hóa: ")
-        key = input("Nhập mật khẩu mã hóa file: ")
-        f_enc_obj = FileEncryption()
-        f_enc_obj.encrytion(path, key)
-    
-    elif choice == "2":
-        # decryption
-        path1 = input("Nhập đường dẫn file thứ 1: ")
-        path2 = input("Nhập đường dẫn file thứ 2: ")
-
-        dpwd_obj = DynamicPassword()
-        ip = raw_input_with_timeout(f"Nhập mật khẩu động trong 3 phút (code: {dpwd_obj.dpwd}): ")
-        if ip == None:
-            print("Đã quá thời gian")
-        else:
-            if dpwd_obj.compare_dpwd(ip):
-            # if 1:
-                f_enc_obj = FileEncryption()
-                f_out = input("Nhập tên file output: ")
-                key = input("Nhập mật khẩu mã hóa file: ")
-                f_enc_obj.decryption(path1, path2, key, f_out)
-            else:
-                print("Sai mật khẩu động ")
+    dpwd_obj = DynamicPassword()
+    ip = raw_input_with_timeout(f"Nhập mật khẩu động trong 3 phút (code: {dpwd_obj.dpwd}): ")
+    if ip == None:
+        print("Đã quá thời gian")
     else:
-        exit()
+        if dpwd_obj.compare_dpwd(ip) == 0:
+            print("Sai mật khẩu động ")
+            exit()
+        choice = input("1/ Mã hóa file \n"
+                       "2/ Giải mã file \n"
+                       "Chọn chức năng (Enter để thoát): ")
+        if choice == "1":
+            # encryption
+            path = input("Nhập đường dẫn tệp tin cần được mã hóa: ")
+            key = input("Nhập mật khẩu mã hóa file: ")
+            f_enc_obj = FileEncryption()
+            f_enc_obj.encrytion(path, key)
+        
+        elif choice == "2":
+            # decryption
+            path1 = input("Nhập đường dẫn file thứ 1: ")
+            path2 = input("Nhập đường dẫn file thứ 2: ")
+            f_enc_obj = FileEncryption()
+            f_out = input("Nhập tên file output: ")
+            key = input("Nhập mật khẩu mã hóa file: ")
+            f_enc_obj.decryption(path1, path2, key, f_out)
+        else:
+            exit()
 
     # test_timeout = True
     # if test_timeout:
@@ -234,8 +232,3 @@ if __name__ == "__main__":
     #     print(dpwd_obj.dpwd)
     #     usr_ans = input()
     #     print(dpwd_obj.compare_dpwd(usr_ans))
-        
-
-    
-
-    
