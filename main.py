@@ -5,7 +5,7 @@ from Crypto.Random import get_random_bytes, random
 import ctypes
 import _thread
 import threading
-import os
+
 
 class DataEncryption:
     key_size = 32
@@ -53,11 +53,8 @@ class DataEncryption:
             return None
 
 class FileEncryption:
-    def encrytion(self, path: str, key: str, path1: str, path2: str):
-        filename = os.path.basename(path)
-        file1_path = os.path.join(path1,filename+"1")
-        file2_path = os.path.join(path2,filename+"2")
-        with open(path,"rb") as file, open(file1_path,"wb") as f_out_1, open(file2_path,"wb") as f_out_2:
+    def encrytion(self, filename: str, key: str):
+        with open(filename,"rb") as file, open(filename+"1","wb") as f_out_1, open(filename+"2","wb") as f_out_2:
             pt = file.read()
             enc_object = DataEncryption(key.encode("utf-8"))
 
@@ -70,9 +67,6 @@ class FileEncryption:
             data2 = hashed_key[16:] + iv[8:] + ct[int(len(ct)/2):]
             f_out_1.write(data1)
             f_out_2.write(data2)
-        file.close()
-        f_out_1.close()
-        f_out_2.close()
 
     def decryption(self, filename1: str, filename2: str, key: str, filename_out:str):
         with open(filename1,"rb") as file_in_1, open(filename2, "rb") as file_in_2:
@@ -89,9 +83,9 @@ class FileEncryption:
                 pt = enc_object.decrypt(ct, iv)
                 with open(filename_out, "wb") as f_out:
                     f_out.write(pt)
-                f_out.close()
-        file_in_1.close()
-        file_in_2.close()
+
+
+
 
 class DynamicPassword:
     keywords = {
@@ -162,24 +156,19 @@ if __name__ == "__main__":
                        "Chọn chức năng (Enter để thoát): ")
         if choice == "1":
             # encryption
-            path = input("Nhập đường dẫn kèm tên file cần được mã hóa: ")
+            path = input("Nhập đường dẫn tệp tin cần được mã hóa: ")
             key = input("Nhập mật khẩu mã hóa file: ")
-            print("File được tách thành 2 file nhỏ.")
-            path1 = input("Nhập đường dẫn nơi lưu file 1: ")
-            path2 = input("Nhập đường dẫn nơi lưu file 2: ")
             f_enc_obj = FileEncryption()
-            f_enc_obj.encrytion(path, key, path1, path2)
-            print("Mã hóa file thành công.")
+            f_enc_obj.encrytion(path, key)
         
         elif choice == "2":
             # decryption
-            path1 = input("Nhập đường dẫn kèm tên file thứ 1: ")
-            path2 = input("Nhập đường dẫn kèm tên file thứ 2: ")
+            path1 = input("Nhập đường dẫn file thứ 1: ")
+            path2 = input("Nhập đường dẫn file thứ 2: ")
             f_enc_obj = FileEncryption()
-            f_out = input("Nhập đường dẫn kèm tên file output: ")
+            f_out = input("Nhập tên file output: ")
             key = input("Nhập mật khẩu mã hóa file: ")
             f_enc_obj.decryption(path1, path2, key, f_out)
-            print("Giải mã file thành công.")
         else:
             exit()
 
