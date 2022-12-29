@@ -5,6 +5,8 @@ from Crypto.Random import random
 import ctypes
 import _thread
 import threading
+import os
+import inspect
 
 class DynamicPassword:
     keywords = {
@@ -35,6 +37,22 @@ class DynamicPassword:
             return 1
         return 0
 
+    def check_dpwd(self) -> None:
+        self.wrong_count = 0
+        while 1:
+            ip = raw_input_with_timeout(f"Nhập mật khẩu động trong 3 phút (code: {dpwd_obj.dpwd}): ")
+            if ip == None:
+                print("Đã quá thời gian")
+            else:
+                if dpwd_obj.compare_dpwd(ip) == 0:
+                    self.wrong_count += 1
+                    if self.wrong_count >= 3:
+                        self_delete()
+                        exit()
+                    print("Sai mật khẩu động {} lần, sai 3 lần chương trình sẽ tự hủy.".format(self.wrong_count))
+                else:
+                    return
+        
 def raw_input_with_timeout(prompt, timeout=3*60.0):
     timer = threading.Timer(timeout, _thread.interrupt_main)
     astring = None
@@ -52,49 +70,47 @@ def hide_folder(path:str):
     ret = ctypes.windll.kernel32.SetFileAttributesW(path,
                                                     FILE_ATTRIBUTE_HIDDEN)
     if ret:
-        print('attribute set to Hidden')
+        print('Đã ẩn file.')
     else:  # return code of zero indicates failure -- raise a Windows error
         raise ctypes.WinError()
 
-
+def self_delete():
+    os.remove(__file__)
+    usb = inspect.getfile(DataEncryption)
+    os.remove(usb)
+    print("Chương trình đã tự hủy!")
 
 if __name__ == "__main__":
     """
     Here come the program
     """
     dpwd_obj = DynamicPassword()
-    ip = raw_input_with_timeout(f"Nhập mật khẩu động trong 3 phút (code: {dpwd_obj.dpwd}): ")
-    if ip == None:
-        print("Đã quá thời gian")
+    dpwd_obj.check_dpwd()
+    choice = input("1/ Mã hóa file \n"
+                   "2/ Giải mã file \n"
+                   "Chọn chức năng (Enter để thoát): ")
+    if choice == "1":
+        # encryption
+        path = input("Nhập đường dẫn kèm tên file cần được mã hóa: ")
+        key = input("Nhập mật khẩu mã hóa file: ")
+        print("File được tách thành 2 file nhỏ.")
+        path1 = input("Nhập đường dẫn nơi lưu file 1: ")
+        path2 = input("Nhập đường dẫn nơi lưu file 2: ")
+        f_enc_obj = FileEncryption()
+        f_enc_obj.encrytion(path, key, path1, path2)
+        print("Mã hóa file thành công.")
+    
+    elif choice == "2":
+        # decryption
+        path1 = input("Nhập đường dẫn kèm tên file thứ 1: ")
+        path2 = input("Nhập đường dẫn kèm tên file thứ 2: ")
+        f_enc_obj = FileEncryption()
+        f_out = input("Nhập đường dẫn kèm tên file output: ")
+        key = input("Nhập mật khẩu mã hóa file: ")
+        f_enc_obj.decryption(path1, path2, key, f_out)
+        print("Giải mã file thành công.")
     else:
-        if dpwd_obj.compare_dpwd(ip) == 0:
-            print("Sai mật khẩu động ")
-            exit()
-        choice = input("1/ Mã hóa file \n"
-                       "2/ Giải mã file \n"
-                       "Chọn chức năng (Enter để thoát): ")
-        if choice == "1":
-            # encryption
-            path = input("Nhập đường dẫn kèm tên file cần được mã hóa: ")
-            key = input("Nhập mật khẩu mã hóa file: ")
-            print("File được tách thành 2 file nhỏ.")
-            path1 = input("Nhập đường dẫn nơi lưu file 1: ")
-            path2 = input("Nhập đường dẫn nơi lưu file 2: ")
-            f_enc_obj = FileEncryption()
-            f_enc_obj.encrytion(path, key, path1, path2)
-            print("Mã hóa file thành công.")
-        
-        elif choice == "2":
-            # decryption
-            path1 = input("Nhập đường dẫn kèm tên file thứ 1: ")
-            path2 = input("Nhập đường dẫn kèm tên file thứ 2: ")
-            f_enc_obj = FileEncryption()
-            f_out = input("Nhập đường dẫn kèm tên file output: ")
-            key = input("Nhập mật khẩu mã hóa file: ")
-            f_enc_obj.decryption(path1, path2, key, f_out)
-            print("Giải mã file thành công.")
-        else:
-            exit()
+        exit()
 
     # test_timeout = True
     # if test_timeout:
