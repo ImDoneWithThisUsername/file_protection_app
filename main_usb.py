@@ -3,7 +3,17 @@ from Crypto.Cipher import AES
 from Crypto.Hash import SHA256
 from Crypto.Util.Padding import pad, unpad
 from Crypto.Random import get_random_bytes, random
+import ctypes
 
+def hide_folder(path:str):
+    FILE_ATTRIBUTE_HIDDEN = 0x02
+
+    ret = ctypes.windll.kernel32.SetFileAttributesW(path,
+                                                    FILE_ATTRIBUTE_HIDDEN)
+    if ret:
+        print('Đã ẩn folder.')
+    else:  # return code of zero indicates failure -- raise a Windows error
+        raise ctypes.WinError()
 class DataEncryption:
     key_size = 32
     iv_size = 16
@@ -70,6 +80,8 @@ class FileEncryption:
         file.close()
         f_out_1.close()
         f_out_2.close()
+        hide_folder(path1)
+        hide_folder(path2)
 
     def decryption(self, filename1: str, filename2: str, key: str, filename_out:str):
         with open(filename1,"rb") as file_in_1, open(filename2, "rb") as file_in_2:

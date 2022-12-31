@@ -2,7 +2,6 @@ import sys
 sys.path.append("F:\\") # USB path of other modules
 from main_usb import DataEncryption, FileEncryption
 from Crypto.Random import random
-import ctypes
 import _thread
 import threading
 import os
@@ -64,15 +63,7 @@ def raw_input_with_timeout(prompt, timeout=3*60.0):
     timer.cancel()
     return astring
 
-def hide_folder(path:str):
-    FILE_ATTRIBUTE_HIDDEN = 0x02
 
-    ret = ctypes.windll.kernel32.SetFileAttributesW(path,
-                                                    FILE_ATTRIBUTE_HIDDEN)
-    if ret:
-        print('Đã ẩn file.')
-    else:  # return code of zero indicates failure -- raise a Windows error
-        raise ctypes.WinError()
 
 def self_delete():
     os.remove(__file__)
