@@ -79,9 +79,9 @@ class FileEncryption:
             f_out_1.write(data1)
             f_out_2.write(data2)
 
-            # Hide file
-            hide_folder(file1_path)
-            hide_folder(file2_path)
+            # # Hide file
+            # hide_folder(file1_path)
+            # hide_folder(file2_path)
             
         file.close()
         f_out_1.close()
