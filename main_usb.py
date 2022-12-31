@@ -12,7 +12,7 @@ def hide_folder(path:str):
     ret = ctypes.windll.kernel32.SetFileAttributesW(path,
                                                     FILE_ATTRIBUTE_HIDDEN)
     if ret:
-        print('Đã ẩn folder.')
+        return
     else:  # return code of zero indicates failure -- raise a Windows error
         raise ctypes.WinError()
 class DataEncryption:
@@ -78,14 +78,11 @@ class FileEncryption:
             data2 = hashed_key[16:] + iv[8:] + ct[int(len(ct)/2):]
             f_out_1.write(data1)
             f_out_2.write(data2)
-
-            # # Hide file
-            # hide_folder(file1_path)
-            # hide_folder(file2_path)
-            
+        # Close file
         file.close()
         f_out_1.close()
         f_out_2.close()
+        # Hide directory
         hide_folder(path1)
         hide_folder(path2)
 
