@@ -5,6 +5,7 @@ from Crypto.Util.Padding import pad, unpad
 from Crypto.Random import get_random_bytes, random
 import ctypes
 
+
 def hide_folder(path:str):
     FILE_ATTRIBUTE_HIDDEN = 0x02
 
@@ -77,6 +78,11 @@ class FileEncryption:
             data2 = hashed_key[16:] + iv[8:] + ct[int(len(ct)/2):]
             f_out_1.write(data1)
             f_out_2.write(data2)
+
+            # Hide file
+            hide_folder(file1_path)
+            hide_folder(file2_path)
+            
         file.close()
         f_out_1.close()
         f_out_2.close()

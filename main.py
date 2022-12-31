@@ -72,36 +72,34 @@ def self_delete():
     print("Chương trình đã tự hủy!")
 
 if __name__ == "__main__":
-    """
-    Here come the program
-    """
     dpwd_obj = DynamicPassword()
     dpwd_obj.check_dpwd()
-    choice = input("1/ Mã hóa file \n"
-                   "2/ Giải mã file \n"
-                   "Chọn chức năng (Enter để thoát): ")
-    if choice == "1":
-        # encryption
-        path = input("Nhập đường dẫn kèm tên file cần được mã hóa: ")
-        key = input("Nhập mật khẩu mã hóa file: ")
-        print("File được tách thành 2 file nhỏ.")
-        path1 = input("Nhập đường dẫn nơi lưu file 1: ")
-        path2 = input("Nhập đường dẫn nơi lưu file 2: ")
-        f_enc_obj = FileEncryption()
-        f_enc_obj.encrytion(path, key, path1, path2)
-        print("Mã hóa file thành công.")
-    
-    elif choice == "2":
-        # decryption
-        path1 = input("Nhập đường dẫn kèm tên file thứ 1: ")
-        path2 = input("Nhập đường dẫn kèm tên file thứ 2: ")
-        f_enc_obj = FileEncryption()
-        f_out = input("Nhập đường dẫn kèm tên file output: ")
-        key = input("Nhập mật khẩu mã hóa file: ")
-        f_enc_obj.decryption(path1, path2, key, f_out)
-        print("Giải mã file thành công.")
-    else:
-        exit()
+    while 1:
+        choice = input("1/ Mã hóa file \n"
+                       "2/ Giải mã file \n"
+                       "Chọn chức năng (Enter để thoát): ")
+        if choice == "1":
+            # encryption
+            path = input("Nhập đường dẫn kèm tên file cần được mã hóa: ")
+            key = input("Nhập mật khẩu mã hóa file: ")
+            print("File được tách thành 2 file nhỏ.")
+            path1 = input("Nhập đường dẫn nơi lưu file 1: ")
+            path2 = input("Nhập đường dẫn nơi lưu file 2: ")
+            f_enc_obj = FileEncryption()
+            f_enc_obj.encrytion(path, key, path1, path2)
+            print("Mã hóa file thành công, file đã được ẩn đi.")
+        
+        elif choice == "2":
+            # decryption
+            path1 = input("Nhập đường dẫn kèm tên file thứ 1: ")
+            path2 = input("Nhập đường dẫn kèm tên file thứ 2: ")
+            f_enc_obj = FileEncryption()
+            f_out = input("Nhập đường dẫn kèm tên file output: ")
+            key = input("Nhập mật khẩu mã hóa file: ")
+            f_enc_obj.decryption(path1, path2, key, f_out)
+            print("Giải mã file thành công.")
+        else:
+            exit()
 
     # test_timeout = True
     # if test_timeout:
